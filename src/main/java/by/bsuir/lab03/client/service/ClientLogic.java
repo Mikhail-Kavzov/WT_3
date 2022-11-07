@@ -10,7 +10,8 @@ public class ClientLogic {
     Client client;
     String command;
     boolean serverEnable;
-    public ClientLogic(){
+
+    public ClientLogic() {
         client = new Client();
         command = "";
     }
@@ -22,15 +23,15 @@ public class ClientLogic {
             ServerReader serverReader = new ServerReader(client, this);
             serverReader.start();
         }
-        while (!command.equals("EXIT") && serverEnable){
+        while (!command.equals("EXIT") && serverEnable) {
             command = commandReader.getCommand();
-            command = command.replaceAll("\\s+","_");
+            command = command.replaceAll("\\s+", "_");
             System.out.println(command);
-            client.sendCommand(command.replaceAll("\\s+","_")+"\n");
+            client.sendCommand(command.replaceAll("\\s+", "_") + System.lineSeparator());
         }
     }
 
-    public void setNonEnable(){
+    public void setNonEnable() {
         serverEnable = false;
     }
 

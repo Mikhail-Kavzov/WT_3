@@ -9,6 +9,7 @@ public class ServerReader extends Thread {
     String data;
     CommandPrinter commandPrinter;
     ClientLogic clientLogic;
+
     public ServerReader(Client client, ClientLogic clientLogic) {
         this.clientLogic = clientLogic;
         this.client = client;
@@ -18,14 +19,14 @@ public class ServerReader extends Thread {
 
     public void run() {
         try {
-            while (!data.equals("STOP")){
+            while (!data.equals("STOP")) {
                 data = client.getData();
                 commandPrinter.print(data);
             }
             client.sendCommand("STOP");
             client.close();
             clientLogic.setNonEnable();
-            commandPrinter.print("Break with the server\n" +
+            commandPrinter.print("Break with the server" + System.lineSeparator() +
                     "Enter any character");
         } catch (IOException e) {
             e.printStackTrace();

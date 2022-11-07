@@ -14,7 +14,7 @@ public class Client {
                 clientSocket = new Socket("localhost", 8888);
                 in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-                String word = "CONNECT\n";
+                String word = "CONNECT" + System.lineSeparator();
                 out.write(word);
                 out.flush();
                 return true;
@@ -34,10 +34,9 @@ public class Client {
 
     public void sendCommand(String command) throws IOException {
         try {
-            out.write(command + "\n");
+            out.write(command + System.lineSeparator());
             out.flush();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             in.close();
             out.close();
             clientSocket.close();
@@ -47,8 +46,7 @@ public class Client {
     public String getData() throws IOException {
         try {
             return in.readLine();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e);
         }
         return "STOP";
