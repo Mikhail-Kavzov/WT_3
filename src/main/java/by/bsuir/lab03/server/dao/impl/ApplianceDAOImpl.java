@@ -24,153 +24,153 @@ import java.util.Set;
 
 public class ApplianceDAOImpl implements ApplianceDAO {
 
-	Factory infoFactory = new Factory();
-	private static String getTagValue(String tag, Element element) {
-		NodeList nodeList = element.getElementsByTagName(tag).item(0).getChildNodes();
-		Node node = (Node) nodeList.item(0);
-		return node.getNodeValue();
-	}
+    Factory infoFactory = new Factory();
 
-	public List<Info> getAll(String path, String type){
-		File xmlFile = new File("src/main/resources/students_db.xml");
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder;
-		try {
-			builder = factory.newDocumentBuilder();
-			Document document = builder.parse(xmlFile);
-			document.getDocumentElement().normalize();
-			Node node = document.getDocumentElement();
-			List<Info> students = new ArrayList<Info>();
-			node = node.getChildNodes().item(1);
-			while (node!=null){
-				if (!node.getNodeName().equals("#text")) {
-					NodeList nodeList = node.getChildNodes();
-					ArrayList<String> parameters = new ArrayList<String>();
-					for (int i = 0; i < nodeList.getLength(); i++) {
-						if (!nodeList.item(i).getNodeName().equals("#text")) {
-							parameters.add(getTagValue(nodeList.item(i).getNodeName(),(Element)node));
-						}
-					}
-					students.add(infoFactory.getInfo(parameters, type));
-				}
-				node = node.getNextSibling();
-			}
-			return students;
-		} catch (Exception exc) {
-			exc.printStackTrace();
-		}
-		return null;
-	}
+    private static String getTagValue(String tag, Element element) {
+        NodeList nodeList = element.getElementsByTagName(tag).item(0).getChildNodes();
+        Node node = (Node) nodeList.item(0);
+        return node.getNodeValue();
+    }
 
-	public boolean add(List<String[]> parameters, String path, String type) throws ParserConfigurationException, IOException, SAXException, TransformerException {
-		try {
-			DocumentBuilder newDocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document doc = newDocumentBuilder.parse(path);
-			Element clientElement = doc.createElement(type);
-			Element root = doc.getDocumentElement();
-			for (String[] parameter : parameters) {
-				System.out.println(parameter[0]);
-				Element element = doc.createElement(parameter[0]);
-				element.setTextContent(parameter[1]);
-				clientElement.appendChild(element);
-			}
-			root.appendChild(clientElement);
+    public List<Info> getAll(String path, String type) {
+        File xmlFile = new File("src/main/resources/students_db.xml");
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+            Document document = builder.parse(xmlFile);
+            document.getDocumentElement().normalize();
+            Node node = document.getDocumentElement();
+            List<Info> students = new ArrayList<Info>();
+            node = node.getChildNodes().item(1);
+            while (node != null) {
+                if (!node.getNodeName().equals("#text")) {
+                    NodeList nodeList = node.getChildNodes();
+                    ArrayList<String> parameters = new ArrayList<String>();
+                    for (int i = 0; i < nodeList.getLength(); i++) {
+                        if (!nodeList.item(i).getNodeName().equals("#text")) {
+                            parameters.add(getTagValue(nodeList.item(i).getNodeName(), (Element) node));
+                        }
+                    }
+                    students.add(infoFactory.getInfo(parameters, type));
+                }
+                node = node.getNextSibling();
+            }
+            return students;
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
+        return null;
+    }
 
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			Source source = new DOMSource(doc);
-			Result result = new StreamResult(path);
-			transformer.transform(source, result);
-			return true;
-		}
-		catch (IOException e){
-			System.out.println(e.getMessage());
-		}
-		return false;
-	}
+    public boolean add(List<String[]> parameters, String path, String type) throws ParserConfigurationException, IOException, SAXException, TransformerException {
+        try {
+            DocumentBuilder newDocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = newDocumentBuilder.parse(path);
+            Element clientElement = doc.createElement(type);
+            Element root = doc.getDocumentElement();
+            for (String[] parameter : parameters) {
+                System.out.println(parameter[0]);
+                Element element = doc.createElement(parameter[0]);
+                element.setTextContent(parameter[1]);
+                clientElement.appendChild(element);
+            }
+            root.appendChild(clientElement);
 
-	public boolean edit(String name, List<String[]> parameters, String path) {File xmlFile = new File(path);
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder;
-		try {
-			builder = factory.newDocumentBuilder();
-			Document document = builder.parse(xmlFile);
-			document.getDocumentElement().normalize();
-			Node node = document.getDocumentElement();
-			node = node.getChildNodes().item(1);
-			while (node!=null){
-				if (!node.getNodeName().equals("#text")) {
-					NodeList nodeList = node.getChildNodes();
-					if (nodeList.item(1).getTextContent().equals(name)) {
-						int k = 0;
-						for (int i = 0; i < nodeList.getLength(); i++) {
-							if (!nodeList.item(i).getNodeName().equals("#text")) {
-								nodeList.item(i).setTextContent(parameters.get(k)[1]);
-								k++;
-							}
-						}
-					}
-				}
-				node = node.getNextSibling();
-			}
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			Source source = new DOMSource(document);
-			Result result = new StreamResult(path);
-			transformer.transform (source, result);
-			return true;
-		} catch (Exception exc) {
-			exc.printStackTrace();
-		}
-		return false;
-	}
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            Source source = new DOMSource(doc);
+            Result result = new StreamResult(path);
+            transformer.transform(source, result);
+            return true;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
 
-	public List<Info> get(Criteria criteria, String path, String type) {
-		File xmlFile = new File(path);
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder;
-		try {
-			builder = factory.newDocumentBuilder();
-			Document document = builder.parse(xmlFile);
-			document.getDocumentElement().normalize();
-			Node node = document.getDocumentElement();
-			List<Info> infoList = new ArrayList<Info>();
-			node = node.getChildNodes().item(1);
-			while (node!=null){
-				if (!node.getNodeName().equals("#text")) {
-					NodeList nodeList = node.getChildNodes();
-					ArrayList<String> parameters = new ArrayList<String>();
-					ArrayList<String> parametersInfo = new ArrayList<>();
-					for (int i = 0; i < nodeList.getLength(); i++) {
-						if (!nodeList.item(i).getNodeName().equals("#text")) {
-							parameters.add(getTagValue(nodeList.item(i).getNodeName(),(Element)node));
-							parametersInfo.add(nodeList.item(i).getNodeName());
-						}
-					}
-					Set<String> applianceProperties = criteria.getCriteria().keySet();
-					if (!applianceProperties.isEmpty()) {
-						boolean isCriteria = true;
-						for (String property : applianceProperties) {
-							int index = parametersInfo.indexOf(property);
-							System.out.println(criteria.getCriteria().get(property).toString());
-							System.out.println(parameters.get(index));
-							if ((index != -1) && (!criteria.getCriteria().get(property).toString().equals(parameters.get(index)))) {
-								isCriteria = false;
-							}
-							if (isCriteria) {
-								infoList.add(infoFactory.getInfo(parameters, type));
-							}
-						}
-					}
-					else{
-						infoList.add(infoFactory.getInfo(parameters, type));
-					}
-				}
-				node = node.getNextSibling();
-			}
-			return infoList;
-		} catch (Exception exc) {
-			exc.printStackTrace();
-		}
-		return null;
-	}
+    public boolean edit(String name, List<String[]> parameters, String path) {
+        File xmlFile = new File(path);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+            Document document = builder.parse(xmlFile);
+            document.getDocumentElement().normalize();
+            Node node = document.getDocumentElement();
+            node = node.getChildNodes().item(1);
+            while (node != null) {
+                if (!node.getNodeName().equals("#text")) {
+                    NodeList nodeList = node.getChildNodes();
+                    if (nodeList.item(1).getTextContent().equals(name)) {
+                        int k = 0;
+                        for (int i = 0; i < nodeList.getLength(); i++) {
+                            if (!nodeList.item(i).getNodeName().equals("#text")) {
+                                nodeList.item(i).setTextContent(parameters.get(k)[1]);
+                                k++;
+                            }
+                        }
+                    }
+                }
+                node = node.getNextSibling();
+            }
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            Source source = new DOMSource(document);
+            Result result = new StreamResult(path);
+            transformer.transform(source, result);
+            return true;
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<Info> get(Criteria criteria, String path, String type) {
+        File xmlFile = new File(path);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+            Document document = builder.parse(xmlFile);
+            document.getDocumentElement().normalize();
+            Node node = document.getDocumentElement();
+            List<Info> infoList = new ArrayList<Info>();
+            node = node.getChildNodes().item(1);
+            while (node != null) {
+                if (!node.getNodeName().equals("#text")) {
+                    NodeList nodeList = node.getChildNodes();
+                    ArrayList<String> parameters = new ArrayList<String>();
+                    ArrayList<String> parametersInfo = new ArrayList<>();
+                    for (int i = 0; i < nodeList.getLength(); i++) {
+                        if (!nodeList.item(i).getNodeName().equals("#text")) {
+                            parameters.add(getTagValue(nodeList.item(i).getNodeName(), (Element) node));
+                            parametersInfo.add(nodeList.item(i).getNodeName());
+                        }
+                    }
+                    Set<String> applianceProperties = criteria.getCriteria().keySet();
+                    if (!applianceProperties.isEmpty()) {
+                        boolean isCriteria = true;
+                        for (String property : applianceProperties) {
+                            int index = parametersInfo.indexOf(property);
+                            System.out.println(criteria.getCriteria().get(property).toString());
+                            System.out.println(parameters.get(index));
+                            if ((index != -1) && (!criteria.getCriteria().get(property).toString().equals(parameters.get(index)))) {
+                                isCriteria = false;
+                            }
+                            if (isCriteria) {
+                                infoList.add(infoFactory.getInfo(parameters, type));
+                            }
+                        }
+                    } else {
+                        infoList.add(infoFactory.getInfo(parameters, type));
+                    }
+                }
+                node = node.getNextSibling();
+            }
+            return infoList;
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
+        return null;
+    }
 
 }

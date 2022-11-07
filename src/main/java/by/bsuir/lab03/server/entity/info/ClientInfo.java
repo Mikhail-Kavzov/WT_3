@@ -10,23 +10,25 @@ public class ClientInfo implements Info {
     public void setName(String name) {
         this.name = name;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
 
     public void setAllowance(String allowance) {
         this.allowance = allowance;
     }
-    public String getAllowance(){
+
+    public String getAllowance() {
         return allowance;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Name: " + getName() + ", Allowance: " + getAllowance();
     }
 
-    public List<String> getParameters(){
+    public List<String> getParameters() {
         ArrayList<String> parameters = new ArrayList<String>();
         parameters.add(getName());
         parameters.add(getAllowance());

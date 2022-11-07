@@ -24,11 +24,11 @@ public class StudentInfo implements Info {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Name: " + getName() + ", AverageScore: " + getAverageScore();
     }
 
-    public List<String> getParameters(){
+    public List<String> getParameters() {
         ArrayList<String> parameters = new ArrayList<String>();
         parameters.add(getName());
         parameters.add(getAverageScore());
